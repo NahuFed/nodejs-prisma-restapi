@@ -7,6 +7,7 @@ import express from "express";
 import productRoutes from "./routes/products.routes.js";
 import categoryRoutes from "./routes/categories.routes.js";
 import cors from "cors";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 /**
  * Instancia principal de la aplicacion Express.
@@ -34,6 +35,11 @@ app.use("/api", productRoutes);
  * Rutas finales: /api/categories
  */
 app.use("/api", categoryRoutes);
+
+/**
+ * Middleware centralizado de errores. Debe ir despues de las rutas.
+ */
+app.use(errorHandler);
 
 /**
  * Inicia el servidor HTTP escuchando en puerto 3000.

@@ -5,6 +5,8 @@
 
 import { Router } from "express";
 import { prisma } from "../db.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
+import { ValidationError } from "../errors/ValidationError.js";
 
 /**
  * Router de Express para rutas de productos.
@@ -90,16 +92,24 @@ router.post("/products", async (req, res, next) => {
  */
 router.get("/products/:id", async (req, res, next) => {
 	try {
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			return next(new ValidationError("Id invalido"));
+		}
+
 		// Busca un producto unico por ID, incluyendo su categoria.
 		const product = await prisma.product.findUnique({
 			where: {
 				// Convierte el parametro :id a numero para comparar con el schema.
-				id: Number(req.params.id),
+				id,
 			},
 			include: {
 				category: true,
 			},
 		});
+		if (!product) {
+			return next(new NotFoundError("Producto no encontrado"));
+		}
 		// Envia el producto encontrado como JSON.
 		res.json(product);
 	} catch (error) {
@@ -125,10 +135,24 @@ router.get("/products/:id", async (req, res, next) => {
  */
 router.delete("/products/:id", async (req, res, next) => {
 	try {
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			return next(new ValidationError("Id invalido"));
+		}
+
+		const existingProduct = await prisma.product.findUnique({
+			where: {
+				id,
+			},
+		});
+		if (!existingProduct) {
+			return next(new NotFoundError("Producto no encontrado"));
+		}
+
 		// Elimina el producto con el ID especificado.
 		const product = await prisma.product.delete({
 			where: {
-				id: Number(req.params.id),
+				id,
 			},
 		});
 		// Envia la cantidad del producto eliminado como respuesta.
@@ -157,10 +181,24 @@ router.delete("/products/:id", async (req, res, next) => {
  */
 router.patch("/products/:id", async (req, res, next) => {
 	try {
+		const id = Number(req.params.id);
+		if (Number.isNaN(id)) {
+			return next(new ValidationError("Id invalido"));
+		}
+
+		const existingProduct = await prisma.product.findUnique({
+			where: {
+				id,
+			},
+		});
+		if (!existingProduct) {
+			return next(new NotFoundError("Producto no encontrado"));
+		}
+
 		// Actualiza el producto con los datos proporcionados en req.body.
 		const product = await prisma.product.update({
 			where: {
-				id: Number(req.params.id),
+				id,
 			},
 			// data contiene solo los campos a actualizar (parcial, no reemplaza todo).
 			data: req.body,
