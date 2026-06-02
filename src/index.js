@@ -1,6 +1,8 @@
 import express from "express";
 import productRoutes from "./routes/products.routes.js";
 import categoryRoutes from "./routes/categories.routes.js";
+import userRoutes from "./routes/users.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import cors from "cors";
 import { prisma } from "./db.js";
 
@@ -12,7 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api", productRoutes);
 app.use("/api", categoryRoutes);
-
+app.use("/api", userRoutes);
+app.use("/api", authRoutes);
 app.use((err, req, res, next) => {
    // Loguear el error para debug en la terminal
    console.error(err);

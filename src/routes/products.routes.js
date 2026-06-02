@@ -17,6 +17,7 @@ import {
 	updateProductValidators,
 	validateProductId,
 } from "../validators/product.validators.js";
+import verifyToken from "../auth/verifyToken.js";
 
 /**
  * Router de Express para rutas de productos.
@@ -71,7 +72,7 @@ router.get("/products", async (req, res, next) => {
  * Body: { name: "Mouse", quantity: 10, price: 25, categoryId: 1 }
  * Response: { id: 2, name: "Mouse", quantity: 10, price: 25, categoryId: 1, createdAt: "2023-05-14T00:30:28.000Z" }
  */
-router.post("/products", createProductValidators, validateFields, async (req, res, next) => {
+router.post("/products", createProductValidators, validateFields, verifyToken, async (req, res, next) => {
 	try {
 		const { name, price, quantity, categoryId } = req.body;
 

@@ -1,5 +1,3 @@
-
-
 # 📦 Trabajo Práctico Integrador
 
 ## Diseño de Modelo de Datos con Prisma y MySQL
@@ -150,5 +148,3 @@ El grupo deberá entregar:
 *   El foco del trabajo está en **el modelo de datos y su funcionamiento**.
 
 ***
-
-

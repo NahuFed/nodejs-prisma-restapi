@@ -274,7 +274,7 @@ Flujo completo:
 5. Handler usa Prisma para consultar DB.
 6. Prisma lee DATABASE_URL de .env y conecta.
 7. Respuesta JSON se envia al cliente.
-8. Si editas un archivo, Nodemon reinicia automticamente.
+8. Si editas un archivo, Nodemon reinicia automticamente el servidor.
 
 ---
 
