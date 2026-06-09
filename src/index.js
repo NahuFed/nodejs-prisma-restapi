@@ -5,24 +5,34 @@ import userRoutes from "./routes/users.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import cors from "cors";
 import { prisma } from "./db.js";
+import morgan from "morgan";
+import AppError from "./utils/AppError.js";
 
 const app = express();
 let server;
 
 app.use(cors());
+app.use(morgan("combined"));
 // Middleware para parsear JSON en el body de las solicitudes
 app.use(express.json());
 app.use("/api", productRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", userRoutes);
 app.use("/api", authRoutes);
+// Middleware de manejo de errores
 app.use((err, req, res, next) => {
-   // Loguear el error para debug en la terminal
-   console.error(err);
+    console.error(err);
+    //revisamos si el error es una instancia de AppError para enviar un mensaje amigable al cliente
+    if (err instanceof AppError) {
+        return res.status(err.statusCode).json({
+            error: err.message,
+        });
+    }
 
-   res.status(err.statusCode || 500).json({
-       error: err.message || "Error Interno  del Servidor",
-   });
+    // Nunca deberiamos exponer detalles internos de errores de infraestructura.
+    res.status(500).json({
+        error: "Error interno del servidor",
+    });
 });
 
 async function shutdown(signal) {
