@@ -3,22 +3,31 @@ import productRoutes from "./routes/products.routes.js";
 import categoryRoutes from "./routes/categories.routes.js";
 import userRoutes from "./routes/users.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import pagesRoutes from "./routes/pages.routes.js";
 import cors from "cors";
 import { prisma } from "./db.js";
 import morgan from "morgan";
 import AppError from "./utils/AppError.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 let server;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const frontendRoot = path.resolve(__dirname, "../../productos-app");
 
 app.use(cors());
 app.use(morgan("combined"));
 // Middleware para parsear JSON en el body de las solicitudes
 app.use(express.json());
+app.use("/src", express.static(path.join(frontendRoot, "src")));
+app.use(express.static(path.join(frontendRoot, "public")));
 app.use("/api", productRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", userRoutes);
 app.use("/api", authRoutes);
+app.use("/", pagesRoutes);
 // Middleware de manejo de errores
 app.use((err, req, res, next) => {
     console.error(err);

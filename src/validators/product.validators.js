@@ -3,6 +3,7 @@ import { body, param } from "express-validator";
 
 export const validateProductId = [
     param("id")
+    //gt: greater than, para asegurarnos que el id sea un número positivo.
         .isInt({ gt: 0 })
         .withMessage("El id del producto debe ser un número entero positivo")
         .toInt(),

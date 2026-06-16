@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
 
 const generateToken = (user) => {
+    //carga util o datos que quiero guardar en el token
     const payload = {
         id: user.id,
         email: user.email,
+        role: user.role
     };
 
     return new Promise((resolve, reject) => {

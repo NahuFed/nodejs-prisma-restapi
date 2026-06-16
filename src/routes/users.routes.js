@@ -1,14 +1,17 @@
 import {Router} from "express";
 import {getUsers, createUser,getUserById,deleteUser,updateUser} from "../controllers/users.controllers.js";
+import verifyToken from "../auth/verifyToken.js";
+import authorizeRoles from "../middlewares/authorizeRoles.js";
 const router = Router();
 
 
 router.route("/users")
-    .get(getUsers)
-    .post(createUser)
-    .delete(deleteUser)
-    .put(updateUser);
+    .get(verifyToken, authorizeRoles("SUPERADMIN"), getUsers)
+    .post(verifyToken, authorizeRoles("SUPERADMIN"), createUser);
 
-router.get("/users/:id", getUserById);
+router.route("/users/:id")
+    .get(verifyToken, authorizeRoles("SUPERADMIN"), getUserById)
+    .put(verifyToken, authorizeRoles("SUPERADMIN"), updateUser)
+    .delete(verifyToken, authorizeRoles("SUPERADMIN"), deleteUser);
 
 export default router;
